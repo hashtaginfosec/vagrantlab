@@ -1,0 +1,80 @@
+#Lots of inspiration from:
+#https://github.com/rgl/windows-domain-controller-vagrant
+#https://github.com/UNT-CAS/Vagrant-AD-Lab
+#https://github.com/clong/DetectionLab
+
+Vagrant.configure("2") do |config|
+  config.vm.define "dc" do |cfg|
+    cfg.vm.box = "peru/windows-server-2012_r2-standard-x64-eval"
+
+    cfg.vm.hostname = "dc"
+
+    # use the plaintext WinRM transport and force it to use basic authentication.
+    cfg.winrm.transport = :plaintext
+    cfg.winrm.basic_auth_only = true
+
+    cfg.vm.communicator = "winrm"
+    cfg.vm.network :private_network, ip: "192.168.56.2"
+
+    cfg.vm.provision "shell", path: "domain-controller.ps1"
+    cfg.vm.provision "shell", reboot: true
+    cfg.vm.provision "shell", path: "domain-controller-configure.ps1"
+    cfg.vm.provision "shell", reboot: true
+
+    cfg.vm.provider "virtualbox" do |vb, override |
+      vb.gui = true
+      vb.customize ["modifyvm", :id, "--memory", 2048]
+      vb.customize ["modifyvm", :id, "--cpus", 2]
+      vb.customize ["modifyvm", :id, "--vram", "32"]
+      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+      vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
+    end
+  end
+
+
+  config.vm.define "wkstn" do |cfg|
+    cfg.vm.box = "peru/my_windows-10-enterprise-x64-eval"
+
+    cfg.vm.hostname = "win10wkstn"
+
+    cfg.vm.communicator = "winrm"
+    cfg.vm.network :private_network, ip: "192.168.56.3", gateway: "192.168.56.2", dns: "192.168.56.2"
+    cfg.vm.provision "shell", reboot: true
+    cfg.vm.provision "shell", path: "domainjoin.ps1"
+    cfg.vm.provision "shell", reboot: true
+    cfg.vm.provision "shell",
+      inline: "net localgroup 'Remote Desktop Users' tester /add"
+
+    cfg.vm.provider "virtualbox" do |vb, override|
+      vb.gui = true
+      vb.customize ["modifyvm", :id, "--memory", 2048]
+      vb.customize ["modifyvm", :id, "--cpus", 2]
+      vb.customize ["modifyvm", :id, "--vram", "32"]
+      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+      vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
+    end
+  end
+
+  config.vm.define "server" do |cfg|
+    cfg.vm.box = "peru/windows-server-2012_r2-standard-x64-eval"
+
+    cfg.vm.hostname = "server"
+
+    cfg.vm.communicator = "winrm"
+    cfg.vm.network :private_network, ip: "192.168.56.4", gateway: "192.168.56.2", dns: "192.168.56.2"
+    cfg.vm.provision "shell", reboot: true
+    cfg.vm.provision "shell", path: "domainjoin.ps1"
+    cfg.vm.provision "shell",
+      inline: "net localgroup administrators tester /add"
+
+    cfg.vm.provider "virtualbox" do |vb, override|
+      vb.gui = true
+      vb.customize ["modifyvm", :id, "--memory", 2048]
+      vb.customize ["modifyvm", :id, "--cpus", 2]
+      vb.customize ["modifyvm", :id, "--vram", "32"]
+      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+      vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
+    end
+  end
+
+end
