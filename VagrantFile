@@ -4,10 +4,10 @@
 #https://github.com/clong/DetectionLab
 
 Vagrant.configure("2") do |config|
-  config.vm.define "dc" do |cfg|
-    cfg.vm.box = "peru/windows-server-2012_r2-standard-x64-eval"
+  config.vm.define "parentDC" do |cfg|
+    cfg.vm.box = "gusztavvargadr/windows-server"
 
-    cfg.vm.hostname = "dc"
+    cfg.vm.hostname = "parentDC"
 
     # use the plaintext WinRM transport and force it to use basic authentication.
     cfg.winrm.transport = :plaintext
@@ -26,16 +26,16 @@ Vagrant.configure("2") do |config|
       vb.customize ["modifyvm", :id, "--memory", 2048]
       vb.customize ["modifyvm", :id, "--cpus", 2]
       vb.customize ["modifyvm", :id, "--vram", "32"]
-      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+      vb.customize ["modifyvm", :id, "--clipboard-mode", "bidirectional"]
       vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
     end
   end
 
 
-  config.vm.define "wkstn" do |cfg|
-    cfg.vm.box = "peru/my_windows-10-enterprise-x64-eval"
+  config.vm.define "parentWkstn" do |cfg|
+    cfg.vm.box = "gusztavvargadr/windows-server"
 
-    cfg.vm.hostname = "win10wkstn"
+    cfg.vm.hostname = "parentWkstn"
 
     cfg.vm.communicator = "winrm"
     cfg.vm.network :private_network, ip: "192.168.56.3", gateway: "192.168.56.2", dns: "192.168.56.2"
@@ -43,38 +43,69 @@ Vagrant.configure("2") do |config|
     cfg.vm.provision "shell", path: "domainjoin.ps1"
     cfg.vm.provision "shell", reboot: true
     cfg.vm.provision "shell",
-      inline: "net localgroup 'Remote Desktop Users' tester /add"
+      inline: "net localgroup Administrators rebecca.howe /add"
+    cfg.vm.provision "shell", path: "autologin-rebecca.ps1"
+
 
     cfg.vm.provider "virtualbox" do |vb, override|
       vb.gui = true
       vb.customize ["modifyvm", :id, "--memory", 2048]
       vb.customize ["modifyvm", :id, "--cpus", 2]
       vb.customize ["modifyvm", :id, "--vram", "32"]
-      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+      vb.customize ["modifyvm", :id, "--clipboard-mode", "bidirectional"]
       vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
     end
   end
 
-  config.vm.define "server" do |cfg|
-    cfg.vm.box = "peru/windows-server-2012_r2-standard-x64-eval"
+  config.vm.define "parentSQL" do |cfg|
+    cfg.vm.box = "gusztavvargadr/windows-server"
 
-    cfg.vm.hostname = "server"
+    cfg.vm.hostname = "parentSQL"
 
     cfg.vm.communicator = "winrm"
     cfg.vm.network :private_network, ip: "192.168.56.4", gateway: "192.168.56.2", dns: "192.168.56.2"
     cfg.vm.provision "shell", reboot: true
     cfg.vm.provision "shell", path: "domainjoin.ps1"
+    cfg.vm.provision "shell", reboot: true
     cfg.vm.provision "shell",
-      inline: "net localgroup administrators tester /add"
+      inline: "net localgroup Administrators svc.acct /add"
+    cfg.vm.provision "shell", path: "autologin-rebecca.ps1"
+    
+    cfg.vm.provider "virtualbox" do |vb, override|
+      vb.gui = true
+      vb.customize ["modifyvm", :id, "--memory", 2048]
+      vb.customize ["modifyvm", :id, "--cpus", 2]
+      vb.customize ["modifyvm", :id, "--vram", "32"]
+      vb.customize ["modifyvm", :id, "--clipboard-mode", "bidirectional"]
+      vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
+    end
+  end
+
+  config.vm.define "attacker" do |cfg|
+    cfg.vm.box = "gusztavvargadr/windows-server"
+
+    cfg.vm.hostname = "attacker"
+
+    cfg.vm.communicator = "winrm"
+    cfg.vm.network :private_network, ip: "192.168.56.10", gateway: "192.168.56.2", dns: "192.168.56.2"
+    cfg.vm.provision "shell", reboot: true
+    cfg.vm.provision "shell", path: "domainjoin.ps1"
+    cfg.vm.provision "shell", reboot: true
+    cfg.vm.provision "shell",
+      inline: "net localgroup Administrators tester /add"
+    cfg.vm.provision "shell",
+      inline: "echo 'Now you can logon to attacker vm with tester:It3st2Detest!"
+
 
     cfg.vm.provider "virtualbox" do |vb, override|
       vb.gui = true
       vb.customize ["modifyvm", :id, "--memory", 2048]
       vb.customize ["modifyvm", :id, "--cpus", 2]
       vb.customize ["modifyvm", :id, "--vram", "32"]
-      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+      vb.customize ["modifyvm", :id, "--clipboard-mode", "bidirectional"]
       vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
     end
   end
 
 end
+

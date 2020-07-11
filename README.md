@@ -5,5 +5,5 @@ Lots of copy pasta and inspiration from
 * https://github.com/UNT-CAS/Vagrant-AD-Lab
 * https://github.com/clong/DetectionLab
 
-It's a work in progress. 
+It's a work in progress. Requires VirtualBox. Currently tested on Windows 10 host with Vagrant.
 
