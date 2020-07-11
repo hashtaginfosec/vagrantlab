@@ -94,7 +94,7 @@ Vagrant.configure("2") do |config|
     cfg.vm.provision "shell",
       inline: "net localgroup Administrators tester /add"
     cfg.vm.provision "shell",
-      inline: "echo 'Now you can logon to attacker vm with tester:It3st2Detest!"
+      inline: "echo 'Now you can logon to attacker vm with tester:It3st2Detest!'"
 
 
     cfg.vm.provider "virtualbox" do |vb, override|
