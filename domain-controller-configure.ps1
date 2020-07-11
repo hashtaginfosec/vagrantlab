@@ -114,7 +114,7 @@ New-ADComputer `
    -SAMAccountName "parentSQL"
 
 Get-ADComputer -Identity 'parentWkstn' | Set-ADAccountControl -TrustedToAuthForDelegation $true
-Set-ADComputer -Identity 'parentWkstn' -Add @{'msDS-AllowedToDelegateTo'=@('time/PARENTDC')}
+Set-ADComputer -Identity 'parentWkstn' -Add @{'msDS-AllowedToDelegateTo'=@('cifs/PARENTDC')}
 
 echo 'thanos.dione Group Membership'
 Get-ADPrincipalGroupMembership -Identity 'thanos.dione' `
