@@ -9,7 +9,7 @@ It's a work in progress. Requires VirtualBox. Currently tested on Windows 10 hos
 
 **Couple active accounts to know about**:
 * vagrant:vagrant - is domain admin in case you need to troubleshoot 
-* tester : It3st2Detest! is what you should start with ;) 
+* tester : It3st2Detest! is what you should start with on attacker VM ;) 
 
 **Instalation Instructions:**
 * Install Vagrant on your host. [Check out installation instructions here.](https://www.vagrantup.com/docs/installation)
