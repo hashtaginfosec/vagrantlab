@@ -5,7 +5,7 @@ Lots of copy pasta and inspiration from
 * https://github.com/UNT-CAS/Vagrant-AD-Lab
 * https://github.com/clong/DetectionLab
 
-It's a work in progress. Requires VirtualBox. Currently tested on Windows 10 host with Vagrant.
+It's a work in progress. Requires VirtualBox. Currently tested on Windows 10 host with Vagrant. Spins up 4 machines so you'll need about thiiiiiiiiiiiiiiiiiiiiiiiiiiiis much space.
 
 **Couple active accounts to know about**:
 * vagrant:vagrant - is domain admin in case you need to troubleshoot 
