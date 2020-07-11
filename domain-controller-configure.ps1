@@ -30,17 +30,6 @@ Add-ADGroupMember `
     -Identity 'Domain Admins' `
     -Members "CN=vagrant,$usersAdPath"
 
-# disable all user accounts, except the ones defined here.
-$enabledAccounts = @(
-    # NB vagrant only works when this account is enabled.
-    'vagrant',
-    'Administrator'
-)
-Get-ADUser -Filter {Enabled -eq $true} `
-    | Where-Object {$enabledAccounts -notcontains $_.Name} `
-    | Disable-ADAccount
-
-
 # set the Administrator password.
 # NB this is also an Domain Administrator account.
 Set-ADAccountPassword `
