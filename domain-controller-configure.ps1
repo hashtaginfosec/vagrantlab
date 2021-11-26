@@ -106,14 +106,15 @@ New-ADComputer `
    -SAMAccountName "parentWkstn"
 
 New-ADComputer `
-   -Description "Who is a good computer? I'm a good computer." `
+   -Description "Who is a good computer? Not me." `
    -DisplayName "parentSQL" `
    -DNSHostName "parentSQL.parentdomain.local" `
    -Enabled $True `
    -Name "parentSQL" `
    -SAMAccountName "parentSQL"
-
+echo 'Let us do some delegation.'
 Get-ADComputer -Identity 'parentWkstn' | Set-ADAccountControl -TrustedToAuthForDelegation $true
+Set-ADComputer -Identity 'parentWkstn' -Add @{'msDS-AllowedToDelegateTo'=@('cifs/PARENTDC')}
 Set-ADComputer -Identity 'parentWkstn' -Add @{'msDS-AllowedToDelegateTo'=@('host/PARENTDC')}
 
 echo 'thanos.dione Group Membership'
