@@ -6,6 +6,7 @@
 Vagrant.configure("2") do |config|
   config.vm.define "parentDC" do |cfg|
     cfg.vm.box = "gusztavvargadr/windows-server"
+    config.vm.box_version = "1809.0.2109"
 
     cfg.vm.hostname = "parentDC"
 
@@ -14,6 +15,8 @@ Vagrant.configure("2") do |config|
     cfg.winrm.basic_auth_only = true
 
     cfg.vm.communicator = "winrm"
+    # Setting DC ip statically for host-only adapter. 
+    # If you change this, you'll also need to change it in Dmain Join script. 
     cfg.vm.network :private_network, ip: "192.168.56.2"
 
     cfg.vm.provision "shell", path: "domain-controller.ps1"
@@ -34,6 +37,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "parentWkstn" do |cfg|
     cfg.vm.box = "gusztavvargadr/windows-server"
+    config.vm.box_version = "1809.0.2109"
 
     cfg.vm.hostname = "parentWkstn"
 
@@ -44,6 +48,7 @@ Vagrant.configure("2") do |config|
     cfg.vm.provision "shell", reboot: true
     cfg.vm.provision "shell",
       inline: "net localgroup Administrators rebecca.howe /add"
+    
     cfg.vm.provision "shell", path: "autologin-rebecca.ps1"
 
 
@@ -59,6 +64,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "parentSQL" do |cfg|
     cfg.vm.box = "gusztavvargadr/windows-server"
+    config.vm.box_version = "1809.0.2109"
 
     cfg.vm.hostname = "parentSQL"
 
@@ -69,6 +75,7 @@ Vagrant.configure("2") do |config|
     cfg.vm.provision "shell", reboot: true
     cfg.vm.provision "shell",
       inline: "net localgroup Administrators svc.acct /add"
+    
     cfg.vm.provision "shell", path: "autologin-rebecca.ps1"
     
     cfg.vm.provider "virtualbox" do |vb, override|
@@ -83,6 +90,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "attacker" do |cfg|
     cfg.vm.box = "gusztavvargadr/windows-server"
+    config.vm.box_version = "1809.0.2109"
 
     cfg.vm.hostname = "attacker"
 
@@ -93,6 +101,8 @@ Vagrant.configure("2") do |config|
     cfg.vm.provision "shell", reboot: true
     cfg.vm.provision "shell",
       inline: "net localgroup Administrators tester /add"
+    
+    
     cfg.vm.provision "shell",
       inline: "echo 'Now you can logon to attacker vm with tester:It3st2Detest!'"
 
