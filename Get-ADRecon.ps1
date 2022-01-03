@@ -1,3 +1,11 @@
+if (Get-Module -ListAvailable -Name ActiveDirectory) {
+    Write-Host "AD Module exists"
+}
+else {
+Write-Host "AD Module does not exist. The DLL will be imported from GitHub."
+Invoke-Expression (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/hashtaginfosec/ADModule/master/Import-ActiveDirectory.ps1');Import-ActiveDirectory
+}
+
 # Echo today's date since this is a point in time snapshot.
 get-date | Tee-Object -FilePath .\domain-recon.txt -Append
 
