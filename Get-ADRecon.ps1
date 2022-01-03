@@ -1,7 +1,3 @@
-# Requires PowerShell ADModule to be installed. 
-# See https://4sysops.com/wiki/how-to-install-the-powershell-active-directory-module/
-# Alternatively, import Microsoft.ActiveDirectory.Management.dll provided in this repo.
-
 # Echo today's date since this is a point in time snapshot.
 get-date | Tee-Object -FilePath .\domain-recon.txt -Append
 
@@ -50,11 +46,11 @@ Get-ADUser -Filter "Name -like 'admin*'" |Select-Object SamAccountName, enabled 
 Write-Output "[+] Listing computers allowed unconstrained delegation. It is required for the DC to have unconstrained delegation. Any other sytsems showing here should be reviewed."| Tee-Object -FilePath .\domain-recon.txt -Append
 Get-ADComputer -Filter {TrustedForDelegation -eq $True} -Properties TrustedForDelegation | Select-Object name, TrustedForDelegation | Tee-Object -FilePath .\domain-recon.txt -Append
 
-Write-Output "[+] Listing all unconstrained delegation users. This is not normal and should be reviwed."| Tee-Object -FilePath .\domain-recon.txt -Append
+Write-Output "[+] Listing all unconstrained delegation users. This is not normal and should be reviewed."| Tee-Object -FilePath .\domain-recon.txt -Append
 Get-ADUser -Filter {TrustedForDelegation -eq $True} -Properties TrustedForDelegation |Select-Object SamAccountName,TrustedForDelegation| Tee-Object -FilePath .\domain-recon.txt -Append
 
 # Constrained delegation.
-Write-Output "[+] Listing all computers with constrained delegation. This should be reviwed."| Tee-Object -FilePath .\domain-recon.txt -Append
+Write-Output "[+] Listing all computers with constrained delegation. This should be reviewed."| Tee-Object -FilePath .\domain-recon.txt -Append
 Get-ADComputer -Filter {msDS-AllowedToDelegateTo -ne "$null"} -Properties msDS-AllowedToDelegateTo |Select-Object DNSHostName, msDS-AllowedToDelegateTo | Tee-Object -FilePath .\domain-recon.txt -Append
 
 # GPOs
