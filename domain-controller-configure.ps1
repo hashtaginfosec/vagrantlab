@@ -86,6 +86,7 @@ New-ADUser `
     -PasswordNeverExpires $true
 
 # add Svc Acct.
+# Make it kerberoastable.
 $name = 'svc.acct'
 New-ADUser `
     -Path $usersAdPath `
@@ -113,6 +114,7 @@ New-ADComputer `
    -Name "parentSQL" `
    -SAMAccountName "parentSQL"
 echo 'Let us do some delegation.'
+# Add constrained delegation vulnerability.
 Get-ADComputer -Identity 'parentWkstn' | Set-ADAccountControl -TrustedToAuthForDelegation $true
 Set-ADComputer -Identity 'parentWkstn' -Add @{'msDS-AllowedToDelegateTo'=@('cifs/PARENTDC')}
 Set-ADComputer -Identity 'parentWkstn' -Add @{'msDS-AllowedToDelegateTo'=@('host/PARENTDC')}
