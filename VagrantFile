@@ -6,7 +6,7 @@
 Vagrant.configure("2") do |config|
   config.vm.define "parentDC" do |cfg|
     cfg.vm.box = "gusztavvargadr/windows-server"
-    config.vm.box_version = "1809.0.2109"
+    #config.vm.box_version = "1809.0.2109"
 
     cfg.vm.hostname = "parentDC"
 
@@ -37,7 +37,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "parentWkstn" do |cfg|
     cfg.vm.box = "gusztavvargadr/windows-server"
-    config.vm.box_version = "1809.0.2109"
+    #config.vm.box_version = "1809.0.2109"
 
     cfg.vm.hostname = "parentWkstn"
 
@@ -64,7 +64,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "parentSQL" do |cfg|
     cfg.vm.box = "gusztavvargadr/windows-server"
-    config.vm.box_version = "1809.0.2109"
+    #config.vm.box_version = "1809.0.2109"
 
     cfg.vm.hostname = "parentSQL"
 
@@ -90,7 +90,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "attacker" do |cfg|
     cfg.vm.box = "gusztavvargadr/windows-server"
-    config.vm.box_version = "1809.0.2109"
+    #config.vm.box_version = "1809.0.2109"
 
     cfg.vm.hostname = "attacker"
 
